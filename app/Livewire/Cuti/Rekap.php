@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire\Cuti;
 
 use Livewire\Component;
@@ -20,7 +21,7 @@ class Rekap extends Component
 
     public function updatedTahun()
     {
-        $this->mount(); // Refresh data saat tahun berubah
+        $this->mount();
     }
 
     public function render()
@@ -28,4 +29,3 @@ class Rekap extends Component
         return view('livewire.cuti.rekap')->layout('layouts.app', ['title' => 'Rekap Cuti Tahunan']);
     }
 }
-

@@ -28,7 +28,6 @@ class Create extends Component
         ])->get();
 
         foreach ($pegawais as $pegawai) {
-            // Cek apakah ada data absensi sebelumnya
             $absensiSebelumnya = $pegawai->absensis->first();
 
             $this->dataAbsensi[] = [

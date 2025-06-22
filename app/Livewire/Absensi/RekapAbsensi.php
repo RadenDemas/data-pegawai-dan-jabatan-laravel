@@ -32,14 +32,12 @@ class RekapAbsensi extends Component
 
     public function render()
     {
-        // Ambil pegawai sesuai search
         $pegawais = Pegawai::when($this->search, function ($query) {
             $query->where('nama', 'like', '%' . $this->search . '%');
         })
             ->orderBy('nama')
             ->paginate(10);
 
-        // Rekap absensi bulanan per pegawai
         $rekap = DB::table('absensis')
             ->select(
                 'pegawai_id',

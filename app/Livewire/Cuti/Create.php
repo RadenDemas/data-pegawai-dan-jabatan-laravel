@@ -22,7 +22,6 @@ class Create extends Component
 
         $jumlahHari = now()->parse($this->tanggal_mulai)->diffInDays(now()->parse($this->tanggal_akhir)) + 1;
 
-        // Hitung total cuti yang sudah diambil di tahun ini
         $totalCutiTahunIni = Cuti::where('pegawai_id', $this->pegawai_id)
             ->whereYear('tanggal_mulai', now()->year)
             ->get()

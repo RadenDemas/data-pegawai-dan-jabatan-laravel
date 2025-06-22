@@ -13,11 +13,11 @@ class Index extends Component
     public $search = '';
     public $perPage = 10;
 
-    protected $queryString = ['search', 'page']; // agar url menyimpan state pencarian dan halaman
+    protected $queryString = ['search', 'page'];
 
     public function updatingSearch()
     {
-        $this->resetPage(); // reset ke halaman 1 saat pencarian berubah
+        $this->resetPage();
     }
 
     public function hapus($id)
