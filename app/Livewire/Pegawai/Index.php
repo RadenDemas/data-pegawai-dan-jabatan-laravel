@@ -3,16 +3,22 @@
 namespace App\Livewire\Pegawai;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Pegawai;
 
 class Index extends Component
 {
-    public function render()
+    use WithPagination;
+
+    public $search = '';
+
+    protected $queryString = ['search']; // Untuk menjaga search tetap ada di URL
+
+    public function updatingSearch()
     {
-        return view('livewire.pegawai.index', [
-            'pegawais' => Pegawai::with(['jabatan', 'unitKerja'])->orderBy('created_at', 'desc')->get()
-        ])->layout('layouts.app', ['title' => 'Data Pegawai']);
+        $this->resetPage(); // Reset halaman ke 1 saat search berubah
     }
+
     public function deletepegawai($id)
     {
         $pegawai = Pegawai::findOrFail($id);
@@ -20,5 +26,16 @@ class Index extends Component
 
         session()->flash('message', 'Pegawai berhasil dihapus.');
         return redirect()->route('pegawai.index');
+    }
+
+    public function render()
+    {
+        $pegawais = Pegawai::with(['jabatan', 'unitKerja'])
+            ->when($this->search, fn($q) => $q->where('nama', 'like', '%' . $this->search . '%'))
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('livewire.pegawai.index', compact('pegawais'))
+            ->layout('layouts.app', ['title' => 'Data Pegawai']);
     }
 }

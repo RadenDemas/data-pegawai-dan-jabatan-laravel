@@ -14,7 +14,6 @@
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
 
-        <!-- Sticky Navbar -->
         <div class="top-0 z-50 w-full navbar bg-base-200 border-b px-6 shadow-sm">
             <div class="flex-none lg:hidden">
                 <label for="my-drawer-2" class="btn btn-ghost btn-square text-lg">
@@ -24,13 +23,10 @@
             <div class="flex-1 px-2 text-2xl font-semibold">Data Pegawai & Pejabat</div>
         </div>
 
-        <!-- Page content here -->
         <main class="p-6 bg-base-100">
             {{ $slot }}
         </main>
     </div>
-
-    <!-- Sidebar -->
     <div class="drawer-side">
         <label for="my-drawer-2" class="drawer-overlay"></label>
         <aside class="w-64 min-h-screen bg-base-200 border-r shadow-md">
@@ -44,16 +40,25 @@
                'bg-base-300 font-semibold text-primary' => request()->routeIs('dashboard'),
                'hover:bg-base-200' => !request()->routeIs('dashboard')
                 ])>
-                        <i class="fa-solid fa-house"></i> Dashboard
+                        <i class="fa-solid fa-gauge"></i> Dashboard
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('pegawai.index') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('pegawai.*'),
-    'hover:bg-base-200' => !request()->routeIs('pegawai.*')
-])>
-                        <i class="fa-solid fa-users"></i> Pegawai
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('pegawai.*'),
+                        'hover:bg-base-200' => !request()->routeIs('pegawai.*')
+                    ])>
+                        <i class="fa-solid fa-id-card"></i> Pegawai
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('gaji.pegawai') }}" @class([
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('gaji.pegawai'),
+                        'hover:bg-base-200' => !request()->routeIs('gaji.pegawai')
+                    ])>
+                        <i class="fa-solid fa-money-bills"></i> Gaji Pegawai
                     </a>
                 </li>
                 <li>
@@ -67,66 +72,61 @@
                 </li>
                 <li>
                     <a href="{{ route('unitkerja.index') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('unitkerja.*'),
-    'hover:bg-base-200' => !request()->routeIs('unitkerja.*')
-])>
-                        <i class="fa-solid fa-building"></i> Unit Kerja
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('unitkerja.*'),
+                        'hover:bg-base-200' => !request()->routeIs('unitkerja.*')
+                    ])>
+                        <i class="fa-solid fa-building-user"></i> Unit Kerja
                     </a>
 
                 </li>
                 <li>
                     <a href="{{ route('absensi.create') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('absensi.create'),
-    'hover:bg-base-200' => !request()->routeIs('absensi.create')
-])>
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('absensi.create'),
+                        'hover:bg-base-200' => !request()->routeIs('absensi.create')
+                    ])>
                         <i class="fa-solid fa-calendar-check"></i> Isi Absensi
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('absensi.index') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('absensi.index'),
-    'hover:bg-base-200' => !request()->routeIs('absensi.index')
-])>
-                        <i class="fa-solid fa-calendar-check"></i> Cek Absensi
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('absensi.index'),
+                        'hover:bg-base-200' => !request()->routeIs('absensi.index')
+                    ])>
+                        <i class="fa-solid fa-clipboard-check"></i> Cek Absensi
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('absensi.rekap') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('absensi.rekap'),
-    'hover:bg-base-200' => !request()->routeIs('absensi.rekap')
-])>
-                        <i class="fa-solid fa-calendar-check"></i> Rekap Absensi
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('absensi.rekap'),
+                        'hover:bg-base-200' => !request()->routeIs('absensi.rekap')
+                    ])>
+                        <i class="fa-solid fa-chart-column"></i> Rekap Absensi
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('create.cuti') }}" @class([
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('create.cuti'),
+                        'hover:bg-base-200' => !request()->routeIs('create.cuti')
+                    ])>
+                        <i class="fa-solid fa-calendar-plus"></i> Pengajuan Cuti
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('cuti.index') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('cuti.*'),
-    'hover:bg-base-200' => !request()->routeIs('cuti*')
-])>
-                        <i class="fa-solid fa-pen-to-square"></i> Pengajuan Cuti
-                    </a>
-                </li>
-                {{-- <li>
-                    <a href="{{ route('cuti.rekap') }}" @class([
-    'flex items-center gap-3 py-2 px-3 rounded-md transition',
-    'bg-base-300 font-semibold text-primary' => request()->routeIs('cuti.rekap'),
-    'hover:bg-base-200' => !request()->routeIs('cuti.rekap')
-])>
-                        <i class="fa-solid fa-pen-to-square"></i> Rekap Cuti
+                        'flex items-center gap-3 py-2 px-3 rounded-md transition',
+                        'bg-base-300 font-semibold text-primary' => request()->routeIs('cuti.*'),
+                        'hover:bg-base-200' => !request()->routeIs('cuti.*')
+                    ])>
+                        <i class="fa-solid fa-calendar-days"></i> Daftar Cuti
                     </a>
                 </li>
                 <li>
-                    <a href="" class="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-base-300 transition">
-                        <i class="fa-solid fa-chart-line"></i> Laporan Absensi
-                    </a>
-                </li> --}}
-                <li>
-                    <form method="POST" action="" class="w-full flex items-center gap-3 py-2 px-3 rounded-md hover:bg-red-100 transition text-red-600">
+                    <form method="POST" action="{{ route('logout') }}" class="w-full flex items-center gap-3 py-2 px-3 rounded-md hover:bg-red-100 transition text-red-600">
                         @csrf
                         <button >
                             <i class="fa-solid fa-right-from-bracket"></i> Logout

@@ -10,6 +10,7 @@ use App\Livewire\UnitKerja\Edit as UnitKerjaEdit;
 use App\Livewire\Pegawai\Index as PegawaiIndex;
 use App\Livewire\Pegawai\Create as PegawaiCreate;
 use App\Livewire\Pegawai\Edit as PegawaiEdit;
+use App\Livewire\Pegawai\Gaji as PegawaiGaji;
 use App\Livewire\Cuti\Index as CutiIndex;
 use App\Livewire\Cuti\Create as CutiCreate;
 use App\Livewire\Cuti\Edit as CutiEdit;
@@ -19,6 +20,7 @@ use App\Livewire\Absensi\Create as AbsensiCreate;
 use App\Livewire\Absensi\Edit as AbsensiEdit;
 use App\Livewire\Absensi\RekapAbsensi;
 use App\Livewire\Dashboard;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::view('/', 'welcome');
 
@@ -48,12 +50,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/pegawai', PegawaiIndex::class)->name('pegawai.index');
     Route::get('/pegawai/create', PegawaiCreate::class)->name('pegawai.create');
     Route::get('/pegawai/{pegawai}/edit', PegawaiEdit::class)->name('pegawai.edit');
+    Route::get('/pegawai/gaji', PegawaiGaji::class)->name('gaji.pegawai');
 });
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/cuti', CutiIndex::class)->name('cuti.index');
-    Route::get('/cuti/create', CutiCreate::class)->name('cuti.create');
+    Route::get('/cuti/create', CutiCreate::class)->name('create.cuti');
     Route::get('/cuti/{id}/edit', CutiEdit::class)->name('cuti.edit');
     Route::get('/cuti/rekap', CutiRekap::class)->name('cuti.rekap');
 });
@@ -68,5 +71,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/absensi/rekap', RekapAbsensi::class)->name('absensi.rekap');
 });
 
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 require __DIR__ . '/auth.php';

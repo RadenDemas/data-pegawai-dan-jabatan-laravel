@@ -3,16 +3,22 @@
 namespace App\Livewire\UnitKerja;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\UnitKerja;
 
 class Index extends Component
 {
-    public function render()
+    use WithPagination;
+
+    public $search = '';
+
+    protected $queryString = ['search'];
+
+    public function updatingSearch()
     {
-        return view('livewire.unit-kerja.index', [
-            'unitkerjas' => UnitKerja::orderBy('created_at', 'desc')->get()
-        ])->layout('layouts.app', ['title' => 'Unit Kerja']);
+        $this->resetPage();
     }
+
     public function deleteunitkerja($id)
     {
         $unitkerja = UnitKerja::findOrFail($id);
@@ -20,5 +26,15 @@ class Index extends Component
 
         session()->flash('message', 'Unit Kerja berhasil dihapus.');
         return redirect()->route('unitkerja.index');
+    }
+
+    public function render()
+    {
+        $unitkerjas = UnitKerja::when($this->search, fn($q) => $q->where('nama_unit', 'like', '%' . $this->search . '%'))
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('livewire.unit-kerja.index', compact('unitkerjas'))
+            ->layout('layouts.app', ['title' => 'Unit Kerja']);
     }
 }

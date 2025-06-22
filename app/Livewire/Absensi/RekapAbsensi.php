@@ -3,71 +3,61 @@
 namespace App\Livewire\Absensi;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Pegawai;
-use App\Models\Absensi;
-use App\Models\Cuti;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class RekapAbsensi extends Component
 {
+    use WithPagination;
+
     public $bulan;
     public $tahun;
+    public $search;
+
+    protected $queryString = ['bulan', 'tahun', 'search'];
 
     public function mount()
     {
         $now = Carbon::now();
-        $this->bulan = $now->month;
-        $this->tahun = $now->year;
+        $this->bulan = $this->bulan ?? $now->format('m');
+        $this->tahun = $this->tahun ?? $now->year;
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function render()
     {
-        $pegawaiList = Pegawai::all();
+        // Ambil pegawai sesuai search
+        $pegawais = Pegawai::when($this->search, function ($query) {
+            $query->where('nama', 'like', '%' . $this->search . '%');
+        })
+            ->orderBy('nama')
+            ->paginate(10);
 
-        $rekap = [];
-        foreach ($pegawaiList as $pegawai) {
-            $hadir = Absensi::where('pegawai_id', $pegawai->id)
-                ->whereMonth('tanggal', $this->bulan)
-                ->whereYear('tanggal', $this->tahun)
-                ->where('status', 'hadir')
-                ->count();
+        // Rekap absensi bulanan per pegawai
+        $rekap = DB::table('absensis')
+            ->select(
+                'pegawai_id',
+                DB::raw("SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as hadir"),
+                DB::raw("SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as izin"),
+                DB::raw("SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as sakit"),
+                DB::raw("SUM(CASE WHEN status = 'tidak_hadir' THEN 1 ELSE 0 END) as tidak_hadir"),
+                DB::raw("SUM(CASE WHEN status = 'cuti' THEN 1 ELSE 0 END) as cuti")
+            )
+            ->whereMonth('tanggal', $this->bulan)
+            ->whereYear('tanggal', $this->tahun)
+            ->groupBy('pegawai_id')
+            ->get()
+            ->keyBy('pegawai_id');
 
-            $izin = Absensi::where('pegawai_id', $pegawai->id)
-                ->whereMonth('tanggal', $this->bulan)
-                ->whereYear('tanggal', $this->tahun)
-                ->where('status', 'izin')
-                ->count();
-
-            $sakit = Absensi::where('pegawai_id', $pegawai->id)
-                ->whereMonth('tanggal', $this->bulan)
-                ->whereYear('tanggal', $this->tahun)
-                ->where('status', 'sakit')
-                ->count();
-
-            $tidakHadir = Absensi::where('pegawai_id', $pegawai->id)
-                ->whereMonth('tanggal', $this->bulan)
-                ->whereYear('tanggal', $this->tahun)
-                ->where('status', 'tidak_hadir')
-                ->count();
-
-            $cuti = Absensi::where('pegawai_id', $pegawai->id)
-                ->whereMonth('tanggal', $this->bulan)
-                ->whereYear('tanggal', $this->tahun)
-                ->where('status', 'cuti')
-                ->count();
-
-            $rekap[] = [
-                'nama' => $pegawai->nama,
-                'hadir' => $hadir,
-                'izin' => $izin,
-                'sakit' => $sakit,
-                'tidak_hadir' => $tidakHadir,
-                'cuti' => $cuti,
-            ];
-        }
-
-        return view('livewire.absensi.rekap-absensi', compact('rekap'))
-            ->layout('layouts.app', ['title' => 'Rekap Absensi Bulanan']);
+        return view('livewire.absensi.rekap-absensi', [
+            'pegawais' => $pegawais,
+            'rekap' => $rekap,
+        ])->layout('layouts.app', ['title' => 'Rekap Absensi Bulanan']);
     }
 }

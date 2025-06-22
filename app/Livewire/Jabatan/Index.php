@@ -3,16 +3,22 @@
 namespace App\Livewire\Jabatan;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Jabatan;
 
 class Index extends Component
 {
-    public function render()
+    use WithPagination;
+
+    public $search = '';
+
+    protected $queryString = ['search'];
+
+    public function updatingSearch()
     {
-        return view('livewire.jabatan.index', [
-            'jabatans' => Jabatan::orderBy('created_at', 'desc')->get()
-        ])->layout('layouts.app', ['title' => 'Daftar Jabatan']);
+        $this->resetPage();
     }
+
     public function deletejabatan($id)
     {
         $jabatan = Jabatan::findOrFail($id);
@@ -20,5 +26,15 @@ class Index extends Component
 
         session()->flash('message', 'Jabatan berhasil dihapus.');
         return redirect()->route('jabatan.index');
+    }
+
+    public function render()
+    {
+        $jabatans = Jabatan::when($this->search, fn($q) => $q->where('nama_jabatan', 'like', '%' . $this->search . '%'))
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('livewire.jabatan.index', compact('jabatans'))
+            ->layout('layouts.app', ['title' => 'Daftar Jabatan']);
     }
 }
